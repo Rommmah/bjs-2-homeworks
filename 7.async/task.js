@@ -1,11 +1,11 @@
 class AlarmClock{
 	constructor(){
 		this.alarmCollection = [],
-		this.timerId = ''
+		this.timerId = null
 	}
 	addClock(time, callback, id){
 		if (!id) throw new Error('error text')
-		if (this.alarmCollection.filter(item => item.id == id).legth) return console.error('Такой id уже существует');
+		if (this.alarmCollection.find(item => item.id == id) ) return console.error('Такой id уже существует');
 		this.alarmCollection.push({id, time, callback})
 	}
 	removeClock(id){
@@ -34,7 +34,7 @@ class AlarmClock{
 	stop(){
 		if (this.timerId) {
 			clearInterval(this.timerId);
-			this.timerId = '';
+			this.timerId = null;
 		}
 	}
 	printAlarms(){
