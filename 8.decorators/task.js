@@ -12,7 +12,9 @@ function cachingDecoratorNew(func) {
 
     let result = func(...args)
     cache.unshift({key, result})
-    if(cache.length > 5) cache.length = 5
+    if(cache.length > 5) {
+      cache.pop()
+    }
     console.log('Вычисляем: ' + result);
     return 'Вычисляем: ' + result
   }
@@ -24,13 +26,18 @@ function debounceDecoratorNew(func, ms) {
   let allowEvoke = true
   let timer
 
-  return function(){
-    if(allowEvoke) func()
-    allowEvoke = false;
-    clearTimeout(timer);
-    timer = setTimeout(function() {
-      allowEvoke = true
-    }, ms);
+  return function(...args){
+    clearTimeout(timer)
+    if(allowEvoke) {
+      func.apply(this, args)
+      timer = setTimeout( () => allowEvoke = true, ms)
+    } else {
+      timer = setTimeout( () => {
+        func.apply(this, args)
+        allowEvoke = true
+      }, ms);      
+    }
+    allowEvoke = false
   }
 }
 
@@ -39,15 +46,23 @@ function debounceDecorator2(func, ms) {
   let allowEvoke = true
   let timer
 
-  function wrap(){
-    if(allowEvoke) func()
-    allowEvoke = false;
-    clearTimeout(timer);
-    timer = setTimeout(function() {
-      allowEvoke = true
-    }, ms);
+  wrap.count = 0
+
+  function wrap(...args){
+    clearTimeout(timer)
+    if(allowEvoke) {
+      func.apply(this, args)
+      timer = setTimeout( () => allowEvoke = true, ms)
+    } else {
+      timer = setTimeout( () => {
+        func.apply(this, args)
+        allowEvoke = true
+      }, ms);      
+    }
+    allowEvoke = false
+
     wrap.count += 1
   }
-  wrap.count = 0
+
   return wrap
 }
