@@ -28,6 +28,8 @@ function debounceDecoratorNew(func, ms) {
 
   return function(...args){
     clearTimeout(timer)
+    allowEvoke = false
+
     if(allowEvoke) {
       func.apply(this, args)
       timer = setTimeout( () => allowEvoke = true, ms)
@@ -37,8 +39,8 @@ function debounceDecoratorNew(func, ms) {
         allowEvoke = true
       }, ms);      
     }
-    allowEvoke = false
   }
+
 }
 
 function debounceDecorator2(func, ms) {
@@ -50,6 +52,8 @@ function debounceDecorator2(func, ms) {
 
   function wrap(...args){
     clearTimeout(timer)
+    allowEvoke = false
+
     if(allowEvoke) {
       func.apply(this, args)
       timer = setTimeout( () => allowEvoke = true, ms)
@@ -59,7 +63,6 @@ function debounceDecorator2(func, ms) {
         allowEvoke = true
       }, ms);      
     }
-    allowEvoke = false
 
     wrap.count += 1
   }
